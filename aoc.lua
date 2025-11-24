@@ -2,21 +2,22 @@ local NAME = ...
 
 local open = io.open
 
+---@return string
 local function read_file(path)
 	local file = open(path, "rb")
 	if not file then
-		return nil
+		error("Could not read file: " .. path)
 	end
 	local content = file:read "*a" -- *a or *all reads the whole file
 	file:close()
 	return content
 end
 
-local function sum(a, b)
-	return a+b
+---@return string
+local function input(year, day)
+	return read_file(".input/" .. year .. "/" .. day .. ".txt")
 end
 
 return {
-	sum = sum,
-	fread = read_file
+	input = input
 }

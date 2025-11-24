@@ -14,9 +14,22 @@ for row in string.gmatch(input, "[^\n]+") do
 end
 table.sort(left)
 table.sort(right)
-for _, num in ipairs(left) do
-	print(num)
+local sumDistance = 0
+local sumSimilarity = 0
+for i, leftNum in ipairs(left) do
+	local rightNum = right[i]
+	local distance = rightNum - leftNum
+	if (distance < 0) then
+		distance = -1 * distance
+	end
+	sumDistance = sumDistance + distance
+	local amountRight = 0
+	for _, rn in ipairs(right) do
+		if rn == leftNum then
+			amountRight = amountRight + 1
+		end
+	end
+	sumSimilarity = sumSimilarity + (leftNum * amountRight)
 end
-for _, num in ipairs(right) do
-	print(num)
-end
+print("sumDistance: " .. sumDistance)
+print("sumSimilarity: " .. sumSimilarity)

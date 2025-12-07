@@ -14,7 +14,7 @@ end
 for ing in string.gmatch(ingredientsBlock, "[^\n]+") do
 	table.insert(ingredients, tonumber(ing))
 end
--- calculating
+-- calculating part 1
 local freshCount = 0
 for _, ing in ipairs(ingredients) do
 	local inAnyRange = false
@@ -29,3 +29,46 @@ for _, ing in ipairs(ingredients) do
 	end
 end
 print("freshCount: " .. freshCount)
+-- calculating part 2
+table.sort(ranges, function(a, b) return a.from < b.from end)
+local currentRanges = ranges
+local nextRanges = {}
+local oneMoreTime = true
+while oneMoreTime do
+	oneMoreTime = false
+	for _, range in ipairs(currentRanges) do
+		range.used = false
+	end
+	for i, range in ipairs(currentRanges) do
+		if not range.used then
+			for j=i+1,#currentRanges do
+				local otherRange = currentRanges[j]
+				if not (otherRange.from > range.to) then
+					if otherRange.to <= range.to then
+						table.insert(nextRanges, range)
+						range.used = true
+						otherRange.used = true
+					else
+						table.insert(nextRanges, {from=range.from, to=otherRange.to, used=true})
+						range.used = true
+						otherRange = true
+					end
+					oneMoreTime = true
+					break
+				end
+			end
+			if not range.used then
+				table.insert(nextRanges, range)
+				range.used = true
+			end
+		end
+	end
+	currentRanges = nextRanges
+	nextRanges = {}
+end
+local intervalSum = 0
+for _, range in ipairs(currentRanges) do
+	local intervalSize = range.to - range.from + 1
+	intervalSum = intervalSum + intervalSize
+end
+print("intervalSum: " .. intervalSum)
